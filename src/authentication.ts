@@ -116,6 +116,7 @@ export async function authenticate(options?: AuthenticationOptions): Promise<Cre
     const name = options?.name ?? DEFAULT_NAME
     const portRegex = /--app-port=([0-9]+)/
     const passwordRegex = /--remoting-auth-token=([\w-_]+)/
+    const passwordRegex2 = /--riotclient-auth-token=([\w-_]+)/
     const pidRegex = /--app-pid=([0-9]+)/
     const isWindows = process.platform === 'win32'
 
@@ -136,7 +137,8 @@ export async function authenticate(options?: AuthenticationOptions): Promise<Cre
       // TODO: investigate regression with calling .replace on rawStdout
       const stdout = (rawStdout as any).replace(/\s/g, '')
       const [, port] = stdout.match(portRegex)!
-      const [, password] = stdout.match(passwordRegex)!
+      const [, password3] = stdout.match(passwordRegex)!
+      const [, password] = stdout.match(passwordRegex2)!
       const [, pid] = stdout.match(pidRegex)!
       const unsafe = options?.unsafe === true
       const hasCert = options?.certificate !== undefined
