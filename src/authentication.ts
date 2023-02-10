@@ -78,6 +78,8 @@ export interface AuthenticationOptions {
    * Default: 'powershell'
    */
   windowsShell?: 'cmd' | 'powershell'
+
+  IsRiotClient?: boolean
 }
 
 /**
@@ -114,9 +116,8 @@ export class ClientNotFoundError extends Error {
 export async function authenticate(options?: AuthenticationOptions): Promise<Credentials> {
   async function tryAuthenticate() {
     const name = options?.name ?? DEFAULT_NAME
-    const portRegex = /--app-port=([0-9]+)/
-    const passwordRegex = /--remoting-auth-token=([\w-_]+)/
-    const passwordRegex2 = /--riotclient-auth-token=([\w-_]+)/
+    const portRegex = options?.IsRiotClient ? /--riotclient-app-port=([0-9]+)/ : /--app-port=([0-9]+)/
+    const passwordRegex = options?.IsRiotClient ? /--riotclient-auth-token=([\w-_]+)/ : /--remoting-auth-token=([\w-_]+)/
     const pidRegex = /--app-pid=([0-9]+)/
     const isWindows = process.platform === 'win32'
 
